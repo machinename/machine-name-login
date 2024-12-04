@@ -1,6 +1,7 @@
 import { Button, styled, TextField } from "@mui/material";
 
 const defaultBorderRadius = '0px';
+const defaultFontWeight = '300';
 
 export const FormTextField = styled(TextField)({
     width: '100%',
@@ -8,19 +9,19 @@ export const FormTextField = styled(TextField)({
         backgroundColor: 'transparent',
     },
     '& .MuiInputBase-input': {
-        fontFamily: 'monospace',
-        fontWeight: 'lighter',
+        fontFamily: 'inherit',
+        fontWeight: defaultFontWeight,
         color: 'inherit',
         transition: 'color 0.3s ease',
     },
     '& label': {
-        fontFamily: 'monospace',
-        fontWeight: 'lighter',
+        fontFamily: 'inherit',
+        fontWeight: defaultFontWeight,
         transition: 'color 0.3s ease',
     },
     '& label.Mui-focused': {
-        fontFamily: 'monospace',
-        fontWeight: 'lighter',
+        fontFamily: 'inherit',
+        fontWeight: defaultFontWeight,
         color: 'inherit',
     },
     '@media (prefers-color-scheme: dark)': {
@@ -54,8 +55,8 @@ export const FormTextField = styled(TextField)({
 
 export const StyledButton = styled(Button)({
     width: '100%',
-    fontFamily: 'monospace',
-    fontWeight: 'lighter',
+    fontFamily: 'inherit',
+    fontWeight: defaultFontWeight,
     color: 'white',
     backgroundColor: 'black',
     borderRadius: defaultBorderRadius,
@@ -72,8 +73,11 @@ export const StyledButton = styled(Button)({
 });
 
 export const StyledTextButton = styled(Button)({
+    fontFamily: 'inherit',
+    fontWeight: defaultFontWeight,
     borderRadius: defaultBorderRadius,
     backgroundColor: 'transparent',
+    padding: '0',
     '@media (prefers-color-scheme: dark)': {
         color: 'lightgray',
     }

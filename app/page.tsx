@@ -138,6 +138,13 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.switchContainer}>
+        <StyledTextButton
+          type="button"
+          onClick={handleSwitch}>
+          {isLogin ? 'Create an account' : 'Already have an account?'}
+        </StyledTextButton>
+      </div>
       <div className={styles.wrapper}>
         <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h2>
         <div className={isHelp ? styles.loginHelp : styles.login}>
@@ -232,17 +239,11 @@ export default function Login() {
             </p>
           </React.Fragment>
         )}
-        <div className={styles.buttonContainer}>
-          <StyledTextButton
-            type="button"
-            onClick={handleSwitch}>
-            {isLogin ? 'Create an account' : 'Already have an account?'}
-          </StyledTextButton>
-          <StyledTextButton type="button"
-            onClick={toggleLoginHelp}>
-            {isHelp ? 'Back' : 'Help'}
-          </StyledTextButton>
-        </div>
+        <StyledTextButton type="button"
+          onClick={toggleLoginHelp}>
+          {isHelp ? 'Back' : 'Log in help'}
+        </StyledTextButton>
+
       </div>
     </div>
   );

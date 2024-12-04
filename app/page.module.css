@@ -3,9 +3,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 10%;
   padding-left: 1rem;
   padding-right: 1rem;
+  height: 100vh;
+}
+
+.page h2 {
+  font-weight: 300;
+  padding: 0;
 }
 
 .wrapper {
@@ -52,9 +57,12 @@
   font-size: small;
 }
 
-.buttonContainer {
+.switchContainer {
+  position: fixed;
+  top: 0;
+  height: 4rem;
+  right: 1rem;
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
 
