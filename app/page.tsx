@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import {
   Google,
+  PrivacyTip,
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@mui/icons-material';
@@ -64,11 +65,16 @@ export default function Login() {
     setPassword('');
   };
 
+  const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    router.push('https://machinename.dev');
+  };
+
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
       await logInWithGoogle();
-      router.push('/');
+      router.push('https://machinename.dev');
     } catch (error) {
       console.log(error);
     } finally {
@@ -96,7 +102,7 @@ export default function Login() {
         }
         
         await logIn(email, password);
-        router.push('/');
+        router.push('https://machinename.dev');
       } else if (!isLogin && !isHelp) {
         if (!email.trim()) {
           setErrors({ ...errors, email: 'Email is required' });
@@ -222,6 +228,9 @@ export default function Login() {
               <div className={styles.form}>
                 <StyledButton onClick={handleContinueWithGoogle} startIcon={<Google />}>
                   Continue with Google
+                </StyledButton>
+                <StyledButton onClick={handleContinueAsGuest} startIcon={<PrivacyTip/>}>
+                  Continue as Guest
                 </StyledButton>
               </div>
             </React.Fragment>
