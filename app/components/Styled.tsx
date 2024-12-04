@@ -24,33 +24,33 @@ export const FormTextField = styled(TextField)({
         fontWeight: defaultFontWeight,
         color: 'inherit',
     },
-    // '@media (prefers-color-scheme: dark)': {
-    //     '& .MuiInput-underline': {
-    //         '&:before': {
-    //             borderBottom: '1px solid gray',
-    //         },
-    //         '&:hover:before': {
-    //             borderBottom: '2px solid gray',
-    //         },
-    //     },
-    //     '& .MuiFilledInput-root': {
-    //         backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    //     },
-    //     '& .MuiInputBase-input': {
-    //         color: 'lightgray',
-    //     },
-    //     '& label': {
-    //         color: 'gray',
-    //     },
-    //     '& label.Mui-focused': {
-    //         color: 'gray',
-    //     },
-    //     '& .MuiOutlinedInput-root': {
-    //         '& fieldset': {
-    //             border: '1px solid gray',
-    //         },
-    //     },
-    // },
+    '@media (prefers-color-scheme: dark)': {
+        '& .MuiInput-underline': {
+            '&:before': {
+                borderBottom: '1px solid gray',
+            },
+            '&:hover:before': {
+                borderBottom: '2px solid gray',
+            },
+        },
+        '& .MuiFilledInput-root': {
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        },
+        '& .MuiInputBase-input': {
+            color: '#ededed',
+        },
+        '& label': {
+            color: 'gray',
+        },
+        '& label.Mui-focused': {
+            color: 'gray',
+        },
+        '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+                border: '1px solid gray',
+            },
+        },
+    },
 });
 
 export const StyledButton = styled(Button)({
