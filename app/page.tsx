@@ -140,6 +140,7 @@ export default function Login() {
     <div className={styles.page}>
       <div className={styles.switchContainer}>
         <StyledTextButton
+          disableRipple={true}
           type="button"
           onClick={handleSwitch}>
           {isLogin ? 'Create an account' : 'Already have an account?'}
@@ -240,10 +241,10 @@ export default function Login() {
           </React.Fragment>
         )}
         <StyledTextButton type="button"
+          disableRipple={true}
           onClick={toggleLoginHelp}>
           {isHelp ? 'Back' : 'Log in help'}
         </StyledTextButton>
-
       </div>
     </div>
   );

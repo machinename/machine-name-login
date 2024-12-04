@@ -54,12 +54,12 @@ export const FormTextField = styled(TextField)({
 });
 
 export const StyledButton = styled(Button)({
-    width: '100%',
-    fontFamily: 'inherit',
-    fontWeight: defaultFontWeight,
-    color: 'white',
     backgroundColor: 'black',
     borderRadius: defaultBorderRadius,
+    color: 'white',
+    fontFamily: 'inherit',
+    fontWeight: defaultFontWeight,
+    width: '100%',
     '&:disabled': {
         backgroundColor: '#f0f0f0',
         color: 'gray',
@@ -73,14 +73,12 @@ export const StyledButton = styled(Button)({
 });
 
 export const StyledTextButton = styled(Button)({
+    backgroundColor: 'transparent',
+    borderRadius: defaultBorderRadius,
     fontFamily: 'inherit',
     fontWeight: defaultFontWeight,
-    borderRadius: defaultBorderRadius,
-    backgroundColor: 'transparent',
     padding: '0',
     '@media (prefers-color-scheme: dark)': {
         color: '#ededed',
     }
 });
-
-
