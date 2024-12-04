@@ -16,6 +16,7 @@ import styles from './page.module.css';
 import { FormTextField, StyledButton, StyledTextButton } from './components/Styled';
 import React from 'react';
 import { useAuthContext } from './providers/AuthProvider';
+import { useAppContext } from './providers/AppProvider';
 
 export default function Login() {
   const
@@ -25,6 +26,7 @@ export default function Login() {
       logInWithGoogle,
       sendPasswordReset,
     } = useAuthContext();
+    const { setInfo } = useAppContext();
 
   const router = useRouter();
 
@@ -85,15 +87,14 @@ export default function Login() {
         }
 
         await sendPasswordReset(email);
-        alert('If the email address is registered, a password reset link will be sent to it.');
+        setInfo('If the email address is registered, a password reset link will be sent to it.');
         setEmail('');
       } else if (isLogin) {
-
         if (!password.trim()) {
           setErrors({ ...errors, password: 'Password is required' });
           return;
         }
-
+        
         await logIn(email, password);
         router.push('/');
       } else if (!isLogin && !isHelp) {
@@ -117,7 +118,6 @@ export default function Login() {
         await createUserAccount(email, password);
         router.push('/');
       }
-
     } catch (error) {
       console.log('Error:', error);
     } finally {
