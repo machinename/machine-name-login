@@ -106,7 +106,7 @@ export default function Login() {
         
         userAuth = await logIn(email, password);
         if(userAuth){
-          router.push('https://machinename.dev');
+          router.push('https://www.machinename.dev');
         } else {
           setErrors({ ...errors, email: 'Invalid credentials provided' });
         }
