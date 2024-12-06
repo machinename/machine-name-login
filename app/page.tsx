@@ -9,10 +9,11 @@ import {
 } from '@mui/material';
 import {
   Google,
-  PrivacyTip,
+  PersonOutline,
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@mui/icons-material';
+
 import styles from './page.module.css';
 import { FormTextField, StyledButton, StyledTextButton } from './components/Styled';
 import React from 'react';
@@ -35,7 +36,7 @@ export default function Login() {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isHelp, setIsLoginHelp] = useState<boolean>(false);
+  const [isHelp, setIsHelp] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
 
   const [errors, setErrors] = useState({
@@ -52,7 +53,7 @@ export default function Login() {
     if (isHelp) {
       return email.trim() !== '';
     } else if (isLogin) {
-      return email.trim() !== '' && password.trim() !== '' && password.length > 7;
+      return email.trim() !== '' && password.trim() !== '' && password.length > 0;
     } else {
       return email.trim() !== '' && password.trim() !== '' && confirmPassword.trim() !== '' && password.length > 7;
     }
@@ -83,6 +84,8 @@ export default function Login() {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    let userAuth = false;
+
     event.preventDefault();
     setErrors({ email: '', password: '', confirmPassword: '' });
     try {
@@ -101,8 +104,12 @@ export default function Login() {
           return;
         }
         
-        await logIn(email, password);
-        router.push('https://machinename.dev');
+        userAuth = await logIn(email, password);
+        if(userAuth){
+          router.push('https://machinename.dev');
+        } else {
+          setErrors({ ...errors, email: 'Invalid credentials provided' });
+        }
       } else if (!isLogin && !isHelp) {
         if (!email.trim()) {
           setErrors({ ...errors, email: 'Email is required' });
@@ -132,13 +139,13 @@ export default function Login() {
   };
 
   const toggleLoginHelp = () => {
-    setIsLoginHelp(prev => !prev);
+    setIsHelp(prev => !prev);
     clearValues();
   };
 
   const handleSwitch = () => {
     setIsLogin(prev => !prev);
-    setIsLoginHelp(false);
+    setIsHelp(false);
     clearValues();
   };
 
@@ -229,7 +236,7 @@ export default function Login() {
                 <StyledButton onClick={handleContinueWithGoogle} startIcon={<Google />}>
                   Continue with Google
                 </StyledButton>
-                <StyledButton onClick={handleContinueAsGuest} startIcon={<PrivacyTip/>}>
+                <StyledButton onClick={handleContinueAsGuest} startIcon={<PersonOutline/>}>
                   Continue as Guest
                 </StyledButton>
               </div>

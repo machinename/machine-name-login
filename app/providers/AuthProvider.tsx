@@ -6,72 +6,34 @@ import React, {
     useState,
     useMemo,
     useCallback,
-    useEffect,
     ReactNode,
 } from 'react';
-
 import { FirebaseError } from 'firebase/app';
 import {
-    deleteUser,
-    onAuthStateChanged,
-    reauthenticateWithCredential,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
     sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signInWithPopup,
-    GoogleAuthProvider,
-    updateProfile,
-    verifyBeforeUpdateEmail,
-    EmailAuthProvider,
-    User,
-    createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from '../firebase';
+import axios from 'axios';
 
 interface AuthContextType {
     authError: string;
     isAuthLoading: boolean;
-    user: User | null;
     createUserAccount: (email: string, password: string) => Promise<void>;
-    deleteUserAccount: (password: string) => Promise<void>;
-    logIn: (email: string, password: string) => Promise<void>;
-    logInWithGoogle: () => Promise<void>;
-    logOut: () => Promise<void>;
+    logIn: (email: string, password: string) => Promise<boolean>;
+    logInWithGoogle: () => Promise<boolean>;
     sendPasswordReset: (email: string) => Promise<void>;
-    sendUserVerification: () => Promise<void>;
-    updateUserDisplayName: (newDisplayName: string) => Promise<void>;
-    updateUserEmail: (newEmail: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [authError, setAuthError] = useState<string>('');
-    const [user, setUser] = useState<User | null>(null);
     const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (!auth) {
-            console.error('Firebase auth is not initialized');
-            return;
-        }
-
-        const token = document.cookie.split(';').find((cookie) => cookie.trim().startsWith('USER_TOKEN='));
-
-        console.log("Token found in cookie:", token);
-        
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setIsAuthLoading(true);
-            if (currentUser) {
-                setUser(currentUser);
-            } else {
-                setUser(null);
-            }
-            setIsAuthLoading(false);
-        });
-
-        return () => unsubscribe();
-    }, []);
 
     const handleError = useCallback((error: unknown) => {
         if (error instanceof FirebaseError) {
@@ -107,7 +69,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendEmailVerification(userCredential.user);
-            setUser(userCredential.user);
+
         } catch (error) {
             handleError(error);
         } finally {
@@ -115,65 +77,53 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, [handleError]);
 
-    const deleteUserAccount = useCallback(async (password: string): Promise<void> => {
-        setIsAuthLoading(true);
-        try {
-            if (user) {
-                const credential = EmailAuthProvider.credential(user.email!, password);
-                await reauthenticateWithCredential(user, credential);
-                await deleteUser(user);
-                setUser(null);
-            }
-        } catch (error) {
-            handleError(error);
-            throw error;
-        } finally {
-            setIsAuthLoading(false);
-        }
-    }, [handleError, user]);
-
-    const logIn = useCallback(async (email: string, password: string): Promise<void> => {
+    const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
         setIsAuthLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const token = await userCredential.user.getIdToken(); 
+            const idToken = await userCredential.user.getIdToken();
+            if (!idToken) {
+                throw new Error('No ID token');
+            }
+            // Send ID token to the backend to create session cookie
+            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken });
 
-            console.log("User is authenticated with token:", token);
-            setUser(userCredential.user);
-
-            document.cookie = `USER_TOKEN=${token}; path=/; max-age=${60 * 60 * 24 * 7}; domain=.machinename.dev; secure; samesite=strict`;
+            // If session is successfully created, redirect the user
+            if (response.status === 200) {
+                return true;
+            } else {
+                throw new Error('Failed to create session');
+            }
         } catch (error) {
             handleError(error);
+            return false;
         } finally {
             setIsAuthLoading(false);
         }
     }, [handleError]);
 
-    const logInWithGoogle = useCallback(async (): Promise<void> => {
+    const logInWithGoogle = useCallback(async (): Promise<boolean> => {
+        setIsAuthLoading(true);
         try {
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-            const token = await result.user.getIdToken();
+            const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
+            const idToken = await userCredential.user.getIdToken();
+            if (!idToken) {
+                throw new Error('No ID token');
+            }
+            // Send ID token to the backend to create session cookie
+            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken });
 
-            console.log("User is authenticated with token:", token);
-            setUser(result.user);
-
-            document.cookie = `USER_TOKEN=${token}; path=/; max-age=${60 * 60 * 24 * 7}; domain=.machinename.dev; secure; samesite=strict`;
+            // If session is successfully created, redirect the user
+            if (response.status === 200) {
+                return true;
+            } else {
+                throw new Error('Failed to create session');
+            }
         } catch (error) {
             handleError(error);
-        }
-    }, [handleError]);
-
-    const logOut = useCallback(async (): Promise<void> => {
-        if (auth === null) {
-            return;
-        }
-        try {
-            await auth.signOut();
-            setUser(null);
-        } catch (error) {
-            handleError(error);
-            throw error;
+            return false;
+        } finally {
+            setIsAuthLoading(false);
         }
     }, [handleError]);
 
@@ -189,73 +139,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, [handleError]);
 
-    const sendUserVerification = useCallback(async (): Promise<void> => {
-        try {
-            if (user) {
-                await sendEmailVerification(user);
-            } else {
-                throw new Error('User not found.');
-            }
-        } catch (error) {
-            handleError(error);
-            throw error;
-        }
-    }, [handleError, user]);
-
-    const updateUserDisplayName = useCallback(async (newDisplayName: string): Promise<void> => {
-        try {
-            if (user) {
-                await updateProfile(user, { displayName: newDisplayName });
-            } else {
-                throw new Error('User not found.');
-            }
-        } catch (error) {
-            handleError(error);
-            throw error;
-        }
-    }, [handleError, user]);
-
-    const updateUserEmail = useCallback(async (newEmail: string, password: string): Promise<void> => {
-        try {
-            if (user) {
-                const credential = EmailAuthProvider.credential(user.email!, password);
-                await reauthenticateWithCredential(user, credential);
-                await verifyBeforeUpdateEmail(user, newEmail);
-            } else {
-                throw new Error('User not found.');
-            }
-        } catch (error) {
-            handleError(error);
-            throw error;
-        }
-    }, [handleError, user]);
-
     const contextValue = useMemo(() => ({
         authError,
         isAuthLoading,
-        user,
         createUserAccount,
-        deleteUserAccount,
         logIn,
         logInWithGoogle,
-        logOut,
         sendPasswordReset,
-        sendUserVerification,
-        updateUserDisplayName,
-        updateUserEmail,
     }), [
         authError,
         isAuthLoading,
-        user,
         createUserAccount,
-        deleteUserAccount,
         logIn,
         logInWithGoogle,
-        logOut,
         sendPasswordReset,
-        sendUserVerification,
-        updateUserDisplayName,
-        updateUserEmail,
     ]);
 
     return (
@@ -272,4 +169,3 @@ export const useAuthContext = (): AuthContextType => {
     }
     return context;
 };
-
