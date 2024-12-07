@@ -129,7 +129,7 @@ export default function Login() {
         }
 
         await createUserAccount(email, password);
-        router.push('/');
+        router.push('https://www.machinename.dev');
       }
     } catch (error) {
       console.log('Error:', error);
