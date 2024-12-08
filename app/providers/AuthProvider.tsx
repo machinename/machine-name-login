@@ -77,30 +77,49 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, [handleError]);
 
-    const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
-        setIsAuthLoading(true);
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const idToken = await userCredential.user.getIdToken();
-            if (!idToken) {
-                throw new Error('No ID token');
-            }
-            // Send ID token to the backend to create session cookie
-            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken }, { withCredentials: true });
 
-            // If session is successfully created, redirect the user
-            if (response.status === 200) {
-                return true;
-            } else {
-                throw new Error('Failed to create session');
-            }
-        } catch (error) {
-            handleError(error);
-            return false;
-        } finally {
-            setIsAuthLoading(false);
+
+const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
+    setIsAuthLoading(true);
+    try {
+        // Step 1: Sign in with email and password
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        
+        // Step 2: Get ID token from Firebase user
+        const idToken = await userCredential.user.getIdToken();
+        if (!idToken) {
+            throw new Error('No ID token received');
         }
-    }, [handleError]);
+
+        // Step 3: Fetch CSRF token (this would need to be available on the frontend, for example, in a meta tag)
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) {
+            throw new Error('No CSRF token found');
+        }
+
+        // Step 4: Send ID token and CSRF token to the backend
+        const response = await axios.post(
+            'https://project-machine-name.uc.r.appspot.com/sessionLogin', 
+            { idToken, csrfToken }, // Include both the ID token and CSRF token
+            { withCredentials: true } // Include credentials (cookies) in the request
+        );
+
+        // Step 5: Check response and handle successful login
+        if (response.status === 200) {
+            // Session cookie has been created on the server, user is logged in
+            return true;
+        } else {
+            throw new Error('Failed to create session');
+        }
+    } catch (error) {
+        handleError(error); // Handle specific error (display error message)
+        return false;
+    } finally {
+        setIsAuthLoading(false); // Reset loading state
+    }
+}, [handleError]);  // `handleError` is assumed to be defined elsewhere in the component
+
+
 
     const logInWithGoogle = useCallback(async (): Promise<boolean> => {
         setIsAuthLoading(true);
