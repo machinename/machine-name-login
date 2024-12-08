@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 throw new Error('No ID token');
             }
             // Send ID token to the backend to create session cookie
-            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken });
+            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken }, { withCredentials: true });
 
             // If session is successfully created, redirect the user
             if (response.status === 200) {
@@ -111,7 +111,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 throw new Error('No ID token');
             }
             // Send ID token to the backend to create session cookie
-            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken });
+            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken }, { withCredentials: true });
 
             // If session is successfully created, redirect the user
             if (response.status === 200) {
