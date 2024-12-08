@@ -131,7 +131,7 @@ const logIn = useCallback(async (email: string, password: string): Promise<boole
                 throw new Error('No ID token');
             }
             // Send ID token to the backend to create session cookie
-            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/login', { idToken }, { withCredentials: true });
+            const response = await axios.post('https://project-machine-name.uc.r.appspot.com/sessionLogin', { idToken }, { withCredentials: true });
 
             // If session is successfully created, redirect the user
             if (response.status === 200) {
