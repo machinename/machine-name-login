@@ -91,11 +91,11 @@ const logIn = useCallback(async (email: string, password: string): Promise<boole
             throw new Error('No ID token received');
         }
 
-        // // Step 3: Fetch CSRF token (this would need to be available on the frontend, for example, in a meta tag)
-        // const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        // if (!csrfToken) {
-        //     throw new Error('No CSRF token found');
-        // }
+        // Step 3: Fetch CSRF token (this would need to be available on the frontend, for example, in a meta tag)
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) {
+            throw new Error('No CSRF token found');
+        }
 
         // Step 4: Send ID token and CSRF token to the backend
         const response = await axios.post(
