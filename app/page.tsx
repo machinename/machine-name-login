@@ -74,8 +74,13 @@ export default function Login() {
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      await logInWithGoogle();
-      router.push('https://machinename.dev');
+      const userAuth = await logInWithGoogle(); 
+      
+      if (userAuth) {
+        // router.push('https://www.machinename.dev');
+      } else {
+        setErrors({ ...errors, email: 'Invalid credentials provided' });
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -106,7 +111,7 @@ export default function Login() {
         
         userAuth = await logIn(email, password);
         if(userAuth){
-          router.push('https://www.machinename.dev');
+          // router.push('https://www.machinename.dev');
         } else {
           setErrors({ ...errors, email: 'Invalid credentials provided' });
         }
