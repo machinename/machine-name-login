@@ -69,7 +69,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendEmailVerification(userCredential.user);
-
         } catch (error) {
             handleError(error);
         } finally {
@@ -96,6 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             );
 
             if (response.status === 200) {
+                console.log(response.data.message);
                 return true;
             } else {
                 throw new Error('Failed to create session');
