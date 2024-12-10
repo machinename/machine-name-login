@@ -95,7 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             );
 
             if (response.status === 200) {
-                console.log('Login successful');
+                console.log(response.data.message);
                 return true;
             } else {
                 throw new Error('Failed to create session');
@@ -125,6 +125,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             );
 
             if (response.status === 200) {
+                console.log(response.data.message);
                 return true;
             } else {
                 throw new Error('Failed to create session');
