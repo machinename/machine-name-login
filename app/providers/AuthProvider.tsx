@@ -89,7 +89,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
 
             const response = await axios.post(
-                'https://project-machine-name.uc.r.appspot.com/login',
+                'https://auth.machinename.dev/login',
                 { idToken },
                 { withCredentials: true }
             );
@@ -119,7 +119,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
 
             const response = await axios.post(
-                'https://project-machine-name.uc.r.appspot.com/login',
+                'https://auth.machinename.dev/login',
                 { idToken },
                 { withCredentials: true }
             );
