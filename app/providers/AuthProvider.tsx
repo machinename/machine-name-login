@@ -95,7 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             );
 
             if (response.status === 200) {
-                console.log(response.data.message);
+                console.log('Login successful');
                 return true;
             } else {
                 throw new Error('Failed to create session');
