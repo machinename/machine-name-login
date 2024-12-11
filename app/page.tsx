@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -67,7 +67,7 @@ export default function Login() {
     setErrors({ email: '', password: '', confirmPassword: '' });
     setPassword('');
   };
-  
+
   const handleRedirect = () => {
     switch (redirect) {
       case 'https://www.machinename.dev':
@@ -172,118 +172,120 @@ export default function Login() {
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.switchContainer}>
-        <StyledTextButton
-          disableRipple={true}
-          type="button"
-          onClick={handleSwitch}>
-          {isLogin ? 'Create an account' : 'Already have an account?'}
-        </StyledTextButton>
-      </div>
-      <div className={styles.wrapper}>
-        <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h2>
-        <div className={isHelp ? styles.loginHelp : styles.login}>
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <FormTextField
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              variant="standard"
-              label="Email"
-              sx={{ width: '100%' }}
-              autoComplete='off'
-            />
-            {errors.email && (<p aria-live="polite" className={styles.textError}>{errors.email}</p>)}
-            {!isHelp && (
+    <Suspense>
+      <div className={styles.page}>
+        <div className={styles.switchContainer}>
+          <StyledTextButton
+            disableRipple={true}
+            type="button"
+            onClick={handleSwitch}>
+            {isLogin ? 'Create an account' : 'Already have an account?'}
+          </StyledTextButton>
+        </div>
+        <div className={styles.wrapper}>
+          <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h2>
+          <div className={isHelp ? styles.loginHelp : styles.login}>
+            <form className={styles.form} onSubmit={handleSubmit}>
               <FormTextField
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 variant="standard"
-                label="Password"
+                label="Email"
+                sx={{ width: '100%' }}
                 autoComplete='off'
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {showPassword ? <VisibilityOffOutlined
-                          sx={{
-                            color: 'gray',
-                            cursor: 'pointer'
-                          }}
-                          onClick={handleClickShowPassword} /> : <VisibilityOutlined
-                          sx={{
-                            color: 'gray',
-                            cursor: 'pointer'
-                          }}
-                          onClick={handleClickShowPassword} />}
-                      </InputAdornment>
-                    )
-                  },
-                }}
               />
+              {errors.email && (<p aria-live="polite" className={styles.textError}>{errors.email}</p>)}
+              {!isHelp && (
+                <FormTextField
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  variant="standard"
+                  label="Password"
+                  autoComplete='off'
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {showPassword ? <VisibilityOffOutlined
+                            sx={{
+                              color: 'gray',
+                              cursor: 'pointer'
+                            }}
+                            onClick={handleClickShowPassword} /> : <VisibilityOutlined
+                            sx={{
+                              color: 'gray',
+                              cursor: 'pointer'
+                            }}
+                            onClick={handleClickShowPassword} />}
+                        </InputAdornment>
+                      )
+                    },
+                  }}
+                />
+              )}
+              {errors.password && (<p aria-live="polite" className={styles.textError}>{errors.password}</p>)}
+              {(!isLogin && !isHelp) && (
+                <FormTextField
+                  type={showPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  variant="standard"
+                  label="Confirm Password"
+                  sx={{
+                    width: '100%',
+                    color: 'inherit',
+                  }}
+                />
+              )}
+              {errors.confirmPassword && (<p aria-live="polite" className={styles.textError}>{errors.confirmPassword}</p>)}
+              <StyledButton disabled={!isButtonEnabled()} type="submit">
+                {isHelp ? 'Send' : (isLogin ? 'Log in' : 'Create Account')}
+              </StyledButton>
+            </form>
+            {!isHelp && (
+              <React.Fragment>
+                <div className={styles.divider}>
+                  <Divider orientation='vertical'>OR</Divider>
+                </div>
+                <div className={styles.dividerMobile}>
+                  <Divider orientation='horizontal'>OR</Divider>
+                </div>
+                <div className={styles.form}>
+                  <StyledButton onClick={handleContinueWithGoogle} startIcon={<Google />}>
+                    Continue with Google
+                  </StyledButton>
+                  <StyledButton onClick={handleContinueAsGuest} startIcon={<PersonOutline />}>
+                    Continue as Guest
+                  </StyledButton>
+                </div>
+              </React.Fragment>
             )}
-            {errors.password && (<p aria-live="polite" className={styles.textError}>{errors.password}</p>)}
-            {(!isLogin && !isHelp) && (
-              <FormTextField
-                type={showPassword ? 'text' : 'password'}
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                variant="standard"
-                label="Confirm Password"
-                sx={{
-                  width: '100%',
-                  color: 'inherit',
-                }}
-              />
-            )}
-            {errors.confirmPassword && (<p aria-live="polite" className={styles.textError}>{errors.confirmPassword}</p>)}
-            <StyledButton disabled={!isButtonEnabled()} type="submit">
-              {isHelp ? 'Send' : (isLogin ? 'Log in' : 'Create Account')}
-            </StyledButton>
-          </form>
-          {!isHelp && (
+          </div>
+          {(!isLogin && !isHelp) && (
+            <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link>.</p>
+          )}
+          {isHelp && (
             <React.Fragment>
-              <div className={styles.divider}>
-                <Divider orientation='vertical'>OR</Divider>
-              </div>
-              <div className={styles.dividerMobile}>
-                <Divider orientation='horizontal'>OR</Divider>
-              </div>
-              <div className={styles.form}>
-                <StyledButton onClick={handleContinueWithGoogle} startIcon={<Google />}>
-                  Continue with Google
-                </StyledButton>
-                <StyledButton onClick={handleContinueAsGuest} startIcon={<PersonOutline />}>
-                  Continue as Guest
-                </StyledButton>
-              </div>
+              <p className={styles.textTerms}>
+                Enter your email to receive a password reset link
+              </p>
+              <p className={styles.textTerms}>
+                For any other issues, please contact <Link href="mailto:support@machinename.dev?subject=Support%20Request&body=Please%20describe%20your%20issue%20here." className={styles.textTerms}>support</Link>
+              </p>
             </React.Fragment>
           )}
+          <StyledTextButton type="button"
+            disableRipple={true}
+            onClick={toggleLoginHelp}>
+            {isHelp ? 'Back' : 'Log in help'}
+          </StyledTextButton>
         </div>
-        {(!isLogin && !isHelp) && (
-          <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link>.</p>
-        )}
-        {isHelp && (
-          <React.Fragment>
-            <p className={styles.textTerms}>
-              Enter your email to receive a password reset link
-            </p>
-            <p className={styles.textTerms}>
-              For any other issues, please contact <Link href="mailto:support@machinename.dev?subject=Support%20Request&body=Please%20describe%20your%20issue%20here." className={styles.textTerms}>support</Link>
-            </p>
-          </React.Fragment>
-        )}
-        <StyledTextButton type="button"
-          disableRipple={true}
-          onClick={toggleLoginHelp}>
-          {isHelp ? 'Back' : 'Log in help'}
-        </StyledTextButton>
       </div>
-    </div>
+    </Suspense>
   );
 };
