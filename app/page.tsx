@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import {
   InputAdornment,
   Divider,
+  CircularProgress,
 } from '@mui/material';
 import {
   Google,
@@ -24,6 +25,7 @@ export default function Login() {
   const
     {
       createUserAccount,
+      isAuthLoading,
       logIn,
       logInWithGoogle,
       sendPasswordReset,
@@ -174,8 +176,16 @@ export default function Login() {
     clearValues();
   };
 
+  if(isAuthLoading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.wrapper}>
+          <CircularProgress />
+        </div>
+      </div>
+    );
+  }
   return (
-
       <div className={styles.page}>
         <div className={styles.switchContainer}>
           <StyledTextButton

@@ -103,10 +103,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [handleError]);
 
     const logInWithGoogle = useCallback(async (): Promise<boolean> => {
-        setIsAuthLoading(true);
         try {
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             const idToken = await userCredential.user.getIdToken();
+            setIsAuthLoading(true);
             if (!idToken) {
                 throw new Error('No ID token');
             }
