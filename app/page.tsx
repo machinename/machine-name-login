@@ -75,13 +75,13 @@ export default function Login() {
     const redirectParam = urlParams.get('redirect');
 
     switch (redirectParam) {
-      case 'https://idea.machinename.dev':
+      case 'idea.machinename.dev':
         router.push('https://idea.machinename.dev');
         break;
-      case 'https://machinename.dev':
+      case 'machinename.dev':
         router.push('https://machinename.dev');
         break;
-      case 'https://www.machinename.dev':
+      case 'www.machinename.dev':
         router.push('https://www.machinename.dev');
         break;
       default:
