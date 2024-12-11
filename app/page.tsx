@@ -157,7 +157,7 @@ export default function Login() {
           return;
         }
         await createUserAccount(email, password);
-        router.push('https://www.machinename.dev');
+        handleRedirect();
       }
     } catch (error) {
       console.log('Error:', error);
