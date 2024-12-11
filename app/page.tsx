@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   InputAdornment,
   Divider,
@@ -28,9 +28,11 @@ export default function Login() {
       logInWithGoogle,
       sendPasswordReset,
     } = useAuthContext();
-    const { setInfo } = useAppContext();
+  const { setInfo } = useAppContext();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -65,6 +67,26 @@ export default function Login() {
     setErrors({ email: '', password: '', confirmPassword: '' });
     setPassword('');
   };
+  
+  const handleRedirect = () => {
+    switch (redirect) {
+      case 'https://www.machinename.dev':
+        router.push('https://www.machinename.dev');
+        break;
+      case 'https://machinename.dev':
+        router.push('https://machinename.dev');
+        break;
+      case 'https://account.machinename.dev/':
+        router.push('https://account.machinename.dev/');
+        break;
+      case 'https://idea.machinename.dev':
+        router.push('https://idea.machinename.dev');
+        break;
+      default:
+        router.push('https://machinename.dev');
+        break;
+    }
+  };
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -74,10 +96,9 @@ export default function Login() {
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      const userAuth = await logInWithGoogle(); 
-      
+      const userAuth = await logInWithGoogle();
       if (userAuth) {
-        // router.push('https://www.machinename.dev');
+        handleRedirect();
       } else {
         setErrors({ ...errors, email: 'Invalid credentials provided' });
       }
@@ -90,7 +111,6 @@ export default function Login() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     let userAuth = false;
-
     event.preventDefault();
     setErrors({ email: '', password: '', confirmPassword: '' });
     try {
@@ -99,7 +119,6 @@ export default function Login() {
           setErrors({ ...errors, email: 'Email is required' });
           return;
         }
-
         await sendPasswordReset(email);
         setInfo('If the email address is registered, a password reset link will be sent to it.');
         setEmail('');
@@ -108,10 +127,9 @@ export default function Login() {
           setErrors({ ...errors, password: 'Password is required' });
           return;
         }
-        
         userAuth = await logIn(email, password);
-        if(userAuth){
-          // router.push('https://www.machinename.dev');
+        if (userAuth) {
+          handleRedirect();
         } else {
           setErrors({ ...errors, email: 'Invalid credentials provided' });
         }
@@ -132,7 +150,6 @@ export default function Login() {
           setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
           return;
         }
-
         await createUserAccount(email, password);
         router.push('https://www.machinename.dev');
       }
@@ -241,7 +258,7 @@ export default function Login() {
                 <StyledButton onClick={handleContinueWithGoogle} startIcon={<Google />}>
                   Continue with Google
                 </StyledButton>
-                <StyledButton onClick={handleContinueAsGuest} startIcon={<PersonOutline/>}>
+                <StyledButton onClick={handleContinueAsGuest} startIcon={<PersonOutline />}>
                   Continue as Guest
                 </StyledButton>
               </div>
