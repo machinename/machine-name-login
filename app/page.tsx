@@ -68,6 +68,7 @@ export default function Login() {
     setConfirmPassword('');
     setErrors({ email: '', password: '', confirmPassword: '' });
     setPassword('');
+    setIsAuthLoading(false);
   };
 
   const handleRedirect = () => {
@@ -161,8 +162,8 @@ export default function Login() {
       }
     } catch (error) {
       console.log('Error:', error);
-    } finally {
       setIsAuthLoading(false);
+    } finally {
       clearValues();
     }
   };
