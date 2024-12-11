@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter,
-  useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import {
   InputAdornment,
   Divider,
@@ -32,8 +31,6 @@ export default function Login() {
   const { setInfo } = useAppContext();
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -70,7 +67,11 @@ export default function Login() {
   };
 
   const handleRedirect = () => {
-    switch (redirect) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectParam = urlParams.get('redirect');
+    console.log('redirectParam:', redirectParam);
+
+    switch (redirectParam) {
       case 'https://www.machinename.dev':
         router.push('https://www.machinename.dev');
         break;
@@ -88,6 +89,7 @@ export default function Login() {
         break;
     }
   };
+
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
