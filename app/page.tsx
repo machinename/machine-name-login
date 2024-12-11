@@ -172,7 +172,7 @@ export default function Login() {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <div className={styles.page}>
         <div className={styles.switchContainer}>
           <StyledTextButton
