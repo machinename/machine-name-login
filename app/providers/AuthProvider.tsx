@@ -76,26 +76,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, [handleError]);
 
-
-
     const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
         setIsAuthLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const idToken = await userCredential.user.getIdToken();
-
             if (!idToken) {
                 throw new Error('No ID token received');
             }
-
             const response = await axios.post(
                 'https://auth.machinename.dev/login',
                 { idToken },
                 { withCredentials: true }
             );
-
             if (response.status === 200) {
-                console.log(response.data.message);
                 return true;
             } else {
                 throw new Error('Failed to create session');
@@ -106,26 +100,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } finally {
             setIsAuthLoading(false);
         }
-    }, [handleError]); 
+    }, [handleError]);
 
     const logInWithGoogle = useCallback(async (): Promise<boolean> => {
         setIsAuthLoading(true);
         try {
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             const idToken = await userCredential.user.getIdToken();
-
             if (!idToken) {
                 throw new Error('No ID token');
             }
-
             const response = await axios.post(
                 'https://auth.machinename.dev/login',
                 { idToken },
                 { withCredentials: true }
             );
-
             if (response.status === 200) {
-                console.log(response.data.message);
                 return true;
             } else {
                 throw new Error('Failed to create session');
