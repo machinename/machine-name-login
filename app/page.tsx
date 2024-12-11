@@ -25,7 +25,7 @@ export default function Login() {
   const
     {
       createUserAccount,
-      isAuthLoading,
+      // isAuthLoading,
       logIn,
       logInWithGoogle,
       sendPasswordReset,
@@ -40,6 +40,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isHelp, setIsHelp] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
 
   const [errors, setErrors] = useState({
     email: '',
@@ -71,7 +73,6 @@ export default function Login() {
   const handleRedirect = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const redirectParam = urlParams.get('redirect');
-    console.log('redirectParam:', redirectParam);
 
     switch (redirectParam) {
       case 'https://idea.machinename.dev':
@@ -98,6 +99,7 @@ export default function Login() {
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
+      setIsAuthLoading(true);
       const userAuth = await logInWithGoogle();
       if (userAuth) {
         handleRedirect();
@@ -107,6 +109,7 @@ export default function Login() {
     } catch (error) {
       console.log(error);
     } finally {
+      setIsAuthLoading(false);
       clearValues();
     }
   };
@@ -116,6 +119,7 @@ export default function Login() {
     event.preventDefault();
     setErrors({ email: '', password: '', confirmPassword: '' });
     try {
+      setIsAuthLoading(true);
       if (isHelp) {
         if (!email) {
           setErrors({ ...errors, email: 'Email is required' });
@@ -158,6 +162,7 @@ export default function Login() {
     } catch (error) {
       console.log('Error:', error);
     } finally {
+      setIsAuthLoading(false);
       clearValues();
     }
   };
