@@ -1,8 +1,9 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter,
+  useSearchParams } from 'next/navigation'
 import {
   InputAdornment,
   Divider,
@@ -172,7 +173,7 @@ export default function Login() {
   };
 
   return (
-    <Suspense>
+
       <div className={styles.page}>
         <div className={styles.switchContainer}>
           <StyledTextButton
@@ -286,6 +287,5 @@ export default function Login() {
           </StyledTextButton>
         </div>
       </div>
-    </Suspense>
   );
 };
