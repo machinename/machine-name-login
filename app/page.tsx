@@ -292,7 +292,7 @@ export default function Login() {
           </React.Fragment>
         ) : 
           <React.Fragment>
-            <p>Secure Login with reCAPTCHA subject to Google <Link href="https://policies.google.com/terms" className={styles.textTerms}>Terms</Link> & <Link href="https://policies.google.com/privacy" className={styles.textTerms}>Privacy</Link></p>
+            <p>Secure Login with reCAPTCHA subject to Google <Link href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className={styles.textTerms}>Terms</Link> & <Link href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className={styles.textTerms}>Privacy</Link></p>
           </React.Fragment>
         }
         <StyledTextButton type="button"
