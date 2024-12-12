@@ -6,6 +6,7 @@
   padding-left: 1rem;
   padding-right: 1rem;
   height: 100vh;
+  text-align: center;
 }
 
 .page h1,
@@ -59,7 +60,7 @@
 }
 
 .switchContainer {
-  position: fixed;
+  position: absolute;
   top: 0;
   height: 4rem;
   right: 1rem;
@@ -82,5 +83,12 @@
   .login {
     align-items: center;
     flex-direction: column;
+  }
+
+  .page {
+    padding-top: 5rem;
+    padding-bottom: 1rem;
+    height: auto;
+    justify-content: flex-start;
   }
 }

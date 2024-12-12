@@ -76,20 +76,20 @@ export default function Login() {
 
     switch (redirectParam) {
       case 'machinename.dev':
-        router.push('https://machinename.dev');
+        router.push('https://www.machinename.dev');
         break;
       case 'www.machinename.dev':
         router.push('https://www.machinename.dev');
         break;
       default:
-        router.push('https://machinename.dev');
+        router.push('https://www.machinename.dev');
         break;
     }
   };
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    router.push('https://machinename.dev');
+    router.push('https://www.machinename.dev');
   };
 
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -195,10 +195,7 @@ export default function Login() {
         </StyledTextButton>
       </div>
       <div className={styles.wrapper}>
-        <h1>Machine Name</h1>
-        <div />
-        <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log in' : 'Create an account')}</h2>
-        <div />
+        <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h2>
         <div className={isHelp ? styles.loginHelp : styles.login}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <FormTextField
@@ -282,9 +279,9 @@ export default function Login() {
           )}
         </div>
         {(!isLogin && !isHelp) && (
-          <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link>.</p>
+          <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.</p>
         )}
-        {isHelp && (
+        {isHelp ? (
           <React.Fragment>
             <p className={styles.textTerms}>
               Enter your email to receive a password reset link
@@ -293,8 +290,11 @@ export default function Login() {
               For any other issues, please contact <Link href="mailto:support@machinename.dev?subject=Support%20Request&body=Please%20describe%20your%20issue%20here." className={styles.textTerms}>support</Link>
             </p>
           </React.Fragment>
-        )}
-        <div />
+        ) : 
+          <React.Fragment>
+            <p>Secure Login with reCAPTCHA subject to Google <Link href="https://policies.google.com/terms" className={styles.textTerms}>Terms</Link> & <Link href="https://policies.google.com/privacy" className={styles.textTerms}>Privacy</Link></p>
+          </React.Fragment>
+        }
         <StyledTextButton type="button"
           disableRipple={true}
           onClick={toggleLoginHelp}>
