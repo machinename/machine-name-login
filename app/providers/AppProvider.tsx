@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 
-
 interface AppContextType {
     info: string;
     setInfo: React.Dispatch<React.SetStateAction<string>>;

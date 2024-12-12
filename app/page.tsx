@@ -25,7 +25,6 @@ export default function Login() {
   const
     {
       createUserAccount,
-      // isAuthLoading,
       logIn,
       logInWithGoogle,
       sendPasswordReset,
@@ -40,7 +39,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isHelp, setIsHelp] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  
+
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
 
   const [errors, setErrors] = useState({
@@ -76,9 +75,6 @@ export default function Login() {
     const redirectParam = urlParams.get('redirect');
 
     switch (redirectParam) {
-      case 'idea.machinename.dev':
-        router.push('https://idea.machinename.dev');
-        break;
       case 'machinename.dev':
         router.push('https://machinename.dev');
         break;
@@ -90,7 +86,6 @@ export default function Login() {
         break;
     }
   };
-
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -187,7 +182,8 @@ export default function Login() {
         </div>
       </div>
     );
-  }
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.switchContainer}>
