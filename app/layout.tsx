@@ -5,14 +5,14 @@ import ProviderWrapper from "./providers/ProviderWrapper";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Machine Name",
+  title: "Machine Name — Login",
   description: "Welcome to Machine Name",
-  keywords: "innovation, showcase, open source, projects, technology, creative solutions, paper take",
+  keywords: "innovation, showcase, open source, projects, technology, creative solutions, machine name, machine, name",
   authors: [
     { name: "Machine Name" }
   ],
   openGraph: {
-    title: "Machine Name",
+    title: "Machine Name — Login",
     description: "Welcome to Machine Name",
     url: 'https://login.machinename.dev',
     siteName: 'Machine Name',

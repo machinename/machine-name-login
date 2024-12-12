@@ -195,7 +195,10 @@ export default function Login() {
         </StyledTextButton>
       </div>
       <div className={styles.wrapper}>
-        <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h2>
+        <h1>Machine Name</h1>
+        <div />
+        <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log in' : 'Create an account')}</h2>
+        <div />
         <div className={isHelp ? styles.loginHelp : styles.login}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <FormTextField
@@ -291,6 +294,7 @@ export default function Login() {
             </p>
           </React.Fragment>
         )}
+        <div />
         <StyledTextButton type="button"
           disableRipple={true}
           onClick={toggleLoginHelp}>
