@@ -1,5 +1,37 @@
 'use client'
 
+// Code For Sub Domains
+// useEffect(() => {
+//     if (!auth) {
+//         setAuthError('Firebase Auth not initialized');
+//         return;
+//     }
+//     const fetchUser = async () => {
+//         setIsAuthLoading(true);
+//         try {
+//             const token = Cookies.get('SNMNCT');
+//             if (token && !user) {
+//                 const userCredential = await signInWithCustomToken(auth, token);
+//                 setUser(userCredential.user);
+//             } else if (!token && user) {
+//                 await auth.signOut();
+//                 setUser(null);
+//             }
+//         } catch (err) {
+//             setAuthError('Session expired or invalid.');
+//         } finally {
+//             setIsAuthLoading(false);
+//         }
+//     };
+//     fetchUser();
+//     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+//         setIsAuthLoading(true);
+//         setUser(currentUser || null);
+//         setIsAuthLoading(false);
+//     });
+//     return () => unsubscribe();
+// }, [user]);
+
 import React, {
     createContext,
     useContext,

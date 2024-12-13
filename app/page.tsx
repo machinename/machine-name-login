@@ -75,21 +75,15 @@ export default function Login() {
     const redirectParam = urlParams.get('redirect');
 
     switch (redirectParam) {
-      case 'machinename.dev':
-        router.push('https://www.machinename.dev');
-        break;
-      case 'www.machinename.dev':
-        router.push('https://www.machinename.dev');
-        break;
       default:
-        router.push('https://www.machinename.dev');
+        router.push('https://localhost:3000');
         break;
     }
   };
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    router.push('https://www.machinename.dev');
+    router.push('https://localhost:3000');
   };
 
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -195,7 +189,7 @@ export default function Login() {
         </StyledTextButton>
       </div>
       <div className={styles.wrapper}>
-        <h2>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h2>
+        <h1>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h1>
         <div className={isHelp ? styles.loginHelp : styles.login}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <FormTextField
@@ -279,7 +273,7 @@ export default function Login() {
           )}
         </div>
         {(!isLogin && !isHelp) && (
-          <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.</p>
+          <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
         )}
         {isHelp ? (
           <React.Fragment>
