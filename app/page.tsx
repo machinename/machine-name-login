@@ -14,7 +14,6 @@ import {
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@mui/icons-material';
-
 import styles from './page.module.css';
 import { FormTextField, StyledButton, StyledTextButton } from './components/Styled';
 import React from 'react';
@@ -22,13 +21,7 @@ import { useAuthContext } from './providers/AuthProvider';
 import { useAppContext } from './providers/AppProvider';
 
 export default function Login() {
-  const
-    {
-      createUserAccount,
-      logIn,
-      logInWithGoogle,
-      sendPasswordReset,
-    } = useAuthContext();
+  const { isAuthLoading, createUserAccount, logIn, logInWithGoogle, sendPasswordReset } = useAuthContext();
   const { setInfo } = useAppContext();
 
   const router = useRouter();
@@ -39,8 +32,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isHelp, setIsHelp] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
-
-  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
 
   const [errors, setErrors] = useState({
     email: '',
@@ -64,52 +55,31 @@ export default function Login() {
 
   const clearValues = () => {
     setEmail('');
-    setConfirmPassword('');
-    setErrors({ email: '', password: '', confirmPassword: '' });
     setPassword('');
-    setIsAuthLoading(false);
-  };
-
-  const handleRedirect = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectParam = urlParams.get('redirect');
-
-    switch (redirectParam) {
-      default:
-        router.push('https://localhost:3000');
-        break;
-    }
+    setConfirmPassword(''); setConfirmPassword('');
+    setErrors({ email: '', password: '', confirmPassword: '' });
   };
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    router.push('https://localhost:3000');
+    router.push('/');
   };
 
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      setIsAuthLoading(true);
-      const userAuth = await logInWithGoogle();
-      if (userAuth) {
-        handleRedirect();
-      } else {
-        setErrors({ ...errors, email: 'Invalid credentials provided' });
-      }
+      await logInWithGoogle();
     } catch (error) {
       console.log(error);
     } finally {
-      setIsAuthLoading(false);
       clearValues();
     }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    let userAuth = false;
     event.preventDefault();
     setErrors({ email: '', password: '', confirmPassword: '' });
     try {
-      setIsAuthLoading(true);
       if (isHelp) {
         if (!email) {
           setErrors({ ...errors, email: 'Email is required' });
@@ -123,12 +93,8 @@ export default function Login() {
           setErrors({ ...errors, password: 'Password is required' });
           return;
         }
-        userAuth = await logIn(email, password);
-        if (userAuth) {
-          handleRedirect();
-        } else {
-          setErrors({ ...errors, email: 'Invalid credentials provided' });
-        }
+        await logIn(email, password);
+        router.push('/');
       } else if (!isLogin && !isHelp) {
         if (!email.trim()) {
           setErrors({ ...errors, email: 'Email is required' });
@@ -147,11 +113,10 @@ export default function Login() {
           return;
         }
         await createUserAccount(email, password);
-        handleRedirect();
+        router.push('/');
       }
     } catch (error) {
       console.log('Error:', error);
-      setIsAuthLoading(false);
     } finally {
       clearValues();
     }
@@ -284,7 +249,7 @@ export default function Login() {
               For any other issues, please contact <Link href="" className={styles.textTerms}>support</Link>
             </p>
           </React.Fragment>
-        ) : 
+        ) :
           <React.Fragment>
             <p>Secure Login with reCAPTCHA subject to Google <Link href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className={styles.textTerms}>Terms</Link> & <Link href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className={styles.textTerms}>Privacy</Link></p>
           </React.Fragment>
