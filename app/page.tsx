@@ -189,7 +189,7 @@ export default function Login() {
         </StyledTextButton>
       </div>
       <div className={styles.wrapper}>
-        <h1>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h1>
+        <h1>{isHelp ? 'Log in help' : (isLogin ? 'Log in' : 'Create an account')}</h1>
         <div className={isHelp ? styles.loginHelp : styles.login}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <FormTextField
@@ -273,7 +273,7 @@ export default function Login() {
           )}
         </div>
         {(!isLogin && !isHelp) && (
-          <p>By creating an account, you agree to our <Link href={'/machinename.dev/privacy.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'/machinename.dev/termsofservice.pdf'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
+          <p>By creating an account, you agree to our <Link href={'/'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'/'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
         )}
         {isHelp ? (
           <React.Fragment>
@@ -281,7 +281,7 @@ export default function Login() {
               Enter your email to receive a password reset link
             </p>
             <p className={styles.textTerms}>
-              For any other issues, please contact <Link href="mailto:support@machinename.dev?subject=Support%20Request&body=Please%20describe%20your%20issue%20here." className={styles.textTerms}>support</Link>
+              For any other issues, please contact <Link href="" className={styles.textTerms}>support</Link>
             </p>
           </React.Fragment>
         ) : 

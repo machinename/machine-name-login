@@ -164,50 +164,6 @@ export const FormTextField = styled(TextField)({
     },
 });
 
-export const NoteHeaderTextField = styled(TextField)({
-    width: '100%',
-    '& .MuiInputBase-input': {
-        fontSize: 'large',
-        fontFamily: 'inherit',
-        fontWeight: defaultFontWeight,
-        WebkitTapHighlightColor: 'transparent',
-        WebkitUserSelect: 'none',
-        color: '#121212',
-    },
-    '& .MuiOutlinedInput-root': {
-        '& fieldset': { border: 'none' },
-        '&:hover fieldset': { border: 'none' },
-        '&.Mui-focused fieldset': { border: 'none' },
-    },
-    '@media (prefers-color-scheme: dark)': {
-        '& .MuiInputBase-input': {
-            color: 'lightgray',
-        }
-    },
-});
-
-export const NoteBodyTextField = styled(TextField)({
-    width: '100%',
-    '& .MuiInputBase-input': {
-        fontFamily: 'inherit',
-        fontWeight: defaultFontWeight,
-        WebkitTapHighlightColor: 'transparent',
-        WebkitUserSelect: 'none',
-        color: '#121212',
-    },
-    '& .MuiOutlinedInput-root': {
-        '& fieldset': { border: 'none' },
-        '&:hover fieldset': { border: 'none' },
-        '&.Mui-focused fieldset': { border: 'none' },
-    },
-    '@media (prefers-color-scheme: dark)': {
-        '& .MuiInputBase-input': {
-            color: 'lightgray',
-        }
-    },
-
-});
-
 export const StyledButton = styled(Button)({
     backgroundColor: 'black',
     borderRadius: defaultBorderRadius,
@@ -227,43 +183,6 @@ export const StyledButton = styled(Button)({
     },
 });
 
-export const StyledNoteButton = styled(Button)({
-    width: '100%',
-    fontFamily: 'inherit',
-    fontWeight: defaultFontWeight,
-    color: 'grey',
-    backgroundColor: 'transparent',
-    borderRadius: defaultBorderRadius,
-    '@media (prefers-color-scheme: dark)': {
-        color: 'grey',
-        backgroundColor: 'transparent',
-    },
-});
-
-export const StyledNoteButtonTwo = styled(Button)({
-    width: '90px',
-    fontFamily: 'inherit',
-    fontWeight: defaultFontWeight,
-    color: '#121212',
-    backgroundColor: 'transparent',
-    borderRadius: defaultBorderRadius,
-    '@media (prefers-color-scheme: dark)': {
-        color: 'lightgray',
-        backgroundColor: 'transparent',
-        border: '0.5px solid gray',
-    },
-});
-
-export const StyledIconButton = styled(IconButton)({
-    color: 'gray',
-    '@media (prefers-color-scheme: dark)': {
-        color: '#ededed',
-        '&.Mui-disabled': {
-            color: 'gray'
-        }
-    }
-});
-
 export const StyledTextButton = styled(Button)({
     color: 'inherit',
     backgroundColor: 'transparent',
@@ -274,59 +193,4 @@ export const StyledTextButton = styled(Button)({
     '@media (prefers-color-scheme: dark)': {
         color: '#ededed',
     }
-});
-
-export const StyledToggleButton = styled(ToggleButton)({
-    fontSize: 'x-large',
-    fontWeight: defaultFontWeight,
-    fontFamily: 'inherit',
-    color: 'inherit',
-    border: 'none',
-    borderRadius: '0px',
-    textTransform: 'none',
-    backgroundColor: 'transparent',
-    '&.Mui-selected': {
-        backgroundColor: 'transparent',
-    },
-    '&:hover': {
-        backgroundColor: 'transparent',
-    },
-    '&:focus': {
-        backgroundColor: 'transparent',
-    },
-    '&:active': {
-        backgroundColor: 'transparent',
-    }
-});
-
-export const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))(() => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        fontFamily: 'inherit',
-        backgroundColor: 'gray',
-        borderRadius: defaultBorderRadius,
-        color: '#f9fafb',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-        fontSize: '1rem',
-    },
-    [`& .${tooltipClasses.arrow}`]: {
-        color: '#f9fafb',
-        '@media (prefers-color-scheme: dark)': {
-            color: 'gray',
-        },
-    },
-}));
-
-export const TransparentIconButton = styled(IconButton)(({ }) => ({
-    color: 'inherit',
-    backgroundColor: 'transparent',
-    '&:hover': {
-        backgroundColor: 'transparent',
-    }
-}));
-
-export const TransparentIcon = styled(Circle)({
-    color: 'transparent',
-    border: 'none',
 });
