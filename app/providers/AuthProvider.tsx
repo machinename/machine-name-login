@@ -19,17 +19,13 @@ import {
     User,
 } from "firebase/auth";
 import { auth } from '../firebase';
-// import axios from 'axios';
+import axios from 'axios';
 
 interface AuthContextType {
     authError: string;
-    isAuthLoading: boolean;
-    user: User | null;
-    createUserAccount: (email: string, password: string) => Promise<void>;
-    logIn: (email: string, password: string) => Promise<void>;
-    logInWithGoogle: () => Promise<void>;
-    // logInServer: () => Promise<boolean>;
-    // logInWithGoogleServer: () => Promise<boolean>;
+    createUserAccount: (email: string, password: string) => Promise<boolean>;
+    logIn: (email: string, password: string) => Promise<boolean>;
+    logInWithGoogle: () => Promise<boolean>;
     sendPasswordReset: (email: string) => Promise<void>;
 }
 
@@ -37,8 +33,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [authError, setAuthError] = useState<string>('');
-    const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
-    const [user, setUser] = useState<null | User>(null);
 
     const handleError = useCallback((error: unknown) => {
         if (error instanceof FirebaseError) {
@@ -69,70 +63,56 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, []);
 
-    const createUserAccount = useCallback(async (email: string, password: string): Promise<void> => {
-        setIsAuthLoading(true);
+    const createUserAccount = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await sendIdTokenToServer(userCredential);
             await sendEmailVerification(userCredential.user);
+            return true;
         } catch (error) {
             handleError(error);
-        } finally {
-            setIsAuthLoading(false);
+            return false;
         }
     }, [handleError]);
 
-    const logIn = useCallback(async (email: string, password: string): Promise<void> => {
-        setIsAuthLoading(true);
+    const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            setUser(userCredential.user);
+            await sendIdTokenToServer(userCredential);
+            return true;
         } catch (error) {
             handleError(error);
-        } finally {
-            setIsAuthLoading(false);
+            return false;
         }
     }, [handleError]);
 
-    const logInWithGoogle = useCallback(async (): Promise<void> => {
+    const logInWithGoogle = useCallback(async (): Promise<boolean> => {
         try {
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
-            setUser(userCredential.user);
+            await sendIdTokenToServer(userCredential);
+            return true;
         } catch (error) {
             handleError(error);
-        } finally {
-            setIsAuthLoading(false);
+            return false;
         }
     }, [handleError]);
 
-    // const logInWithGoogleServer = useCallback(async (): Promise<boolean> => {
-    //     try {
-    //         const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
-    //         await sendIdTokenToServer(userCredential);
-    //         return true;
-    //     } catch (error) {
-    //         handleError(error);
-    //         return false;
-    //     } finally {
-    //         setIsAuthLoading(false);
-    //     }
-    // }, [handleError]);
-
-    // const sendIdTokenToServer = async (userCredential: any) => {
-    //     const idToken = await userCredential.user.getIdToken();
-    //     if (!idToken) {
-    //         throw new Error('No ID token received');
-    //     }
-    //     const response = await axios.post(
-    //         'http://localhost:8080/login',
-    //         { idToken },
-    //         { withCredentials: true }
-    //     );
-    //     if (response.status === 200) {
-    //         return true;
-    //     } else {
-    //         throw new Error('Failed to create session');
-    //     }
-    // };
+    const sendIdTokenToServer = async (userCredential: { user: User }) => {
+        const idToken = await userCredential.user.getIdToken();
+        if (!idToken) {
+            throw new Error('No ID token received');
+        }
+        const response = await axios.post(
+            'https://api.machinename.com/login',
+            { idToken },
+            { withCredentials: true }
+        );
+        if (response.status === 200) {
+            return true;
+        } else {
+            throw new Error('Failed to create login session');
+        }
+    };
 
     const sendPasswordReset = useCallback(async (email: string): Promise<void> => {
         if (auth === null) {
@@ -148,23 +128,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const contextValue = useMemo(() => ({
         authError,
-        isAuthLoading,
-        user,
         createUserAccount,
         logIn,
         logInWithGoogle,
-        // logInServer,
-        // logInWithGoogleServer,
         sendPasswordReset,
     }), [
         authError,
-        isAuthLoading,
-        user,
         createUserAccount,
         logIn,
         logInWithGoogle,
-        // logInServer,
-        // logInWithGoogleServer,
         sendPasswordReset,
     ]);
 
@@ -182,35 +154,3 @@ export const useAuthContext = (): AuthContextType => {
     }
     return context;
 };
-
-// Code For Sub Domains When Using A Server
-// useEffect(() => {
-//     if (!auth) {
-//         setAuthError('Firebase Auth not initialized');
-//         return;
-//     }
-//     const fetchUser = async () => {
-//         setIsAuthLoading(true);
-//         try {
-//             const token = Cookies.get('SNMNCT');
-//             if (token && !user) {
-//                 const userCredential = await signInWithCustomToken(auth, token);
-//                 setUser(userCredential.user);
-//             } else if (!token && user) {
-//                 await auth.signOut();
-//                 setUser(null);
-//             }
-//         } catch (err) {
-//             setAuthError('Session expired or invalid.');
-//         } finally {
-//             setIsAuthLoading(false);
-//         }
-//     };
-//     fetchUser();
-//     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-//         setIsAuthLoading(true);
-//         setUser(currentUser || null);
-//         setIsAuthLoading(false);
-//     });
-//     return () => unsubscribe();
-// }, [user]);

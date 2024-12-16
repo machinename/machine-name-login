@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import {
   InputAdornment,
   Divider,
-  CircularProgress,
 } from '@mui/material';
 import {
   Google,
@@ -14,14 +13,14 @@ import {
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@mui/icons-material';
-import styles from '../page.module.css';
+import styles from './page.module.css';
 import { FormTextField, StyledButton, StyledTextButton } from './components/Styled';
 import React from 'react';
 import { useAuthContext } from './providers/AuthProvider';
 import { useAppContext } from './providers/AppProvider';
 
 export default function Login() {
-  const { isAuthLoading, createUserAccount, logIn, logInWithGoogle, sendPasswordReset } = useAuthContext();
+  const { createUserAccount, logIn, logInWithGoogle, sendPasswordReset } = useAuthContext();
   const { setInfo } = useAppContext();
 
   const router = useRouter();
@@ -39,8 +38,96 @@ export default function Login() {
     confirmPassword: '',
   });
 
-  const handleClickShowPassword = () => {
-    setShowPassword(prev => !prev);
+  const handleClearValues = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword(''); setConfirmPassword('');
+    setErrors({ email: '', password: '', confirmPassword: '' });
+  };
+
+  const handleAccountCreation = async (email: string, password: string, confirmPassword: string) => {
+    if (!email.trim()) {
+      setErrors({ ...errors, email: 'Email is required' });
+      return;
+    }
+    if (!password.trim()) {
+      setErrors({ ...errors, password: 'Password is required' });
+      return;
+    }
+    if (!confirmPassword.trim()) {
+      setErrors({ ...errors, confirmPassword: 'Confirm Password is required' });
+      return;
+    }
+    if (password !== confirmPassword) {
+      setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
+      return;
+    }
+    const sessionCreated = await createUserAccount(email, password);
+    if (sessionCreated) {
+      router.push('https://www.machinename.dev');
+    }
+  };
+
+  const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    router.push('https://www.machinename.dev');
+  };
+
+  const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      let sessionCreated = false;
+      sessionCreated = await logInWithGoogle();
+      if (sessionCreated) {
+        router.push('https://www.machinename.dev');
+      } else {
+        setInfo('Google login failed. Please try again.');
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      handleClearValues();
+    }
+  };
+
+  const handlePasswordReset = async (email: string) => {
+    if (!email) {
+      setErrors({ ...errors, email: 'Email is required' });
+      return;
+    }
+    await sendPasswordReset(email);
+    setInfo('If the email address is registered, a password reset link will be sent to it.');
+    setEmail('');
+  };
+
+  const handleLogIn = async (email: string, password: string) => {
+    if (!password.trim()) {
+      setErrors({ ...errors, password: 'Password is required' });
+      return;
+    }
+    const sessionCreated = await logIn(email, password);
+    if (sessionCreated) {
+      router.push('https://www.machinename.dev');
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrors({ email: '', password: '', confirmPassword: '' });
+    try {
+      if (isHelp) {
+        await handlePasswordReset(email);
+      } else if (isLogin) {
+        await handleLogIn(email, password);
+      } else {
+        await handleAccountCreation(email, password, confirmPassword);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+      setInfo('Error: ' + error);
+    } finally {
+      handleClearValues();
+    }
   };
 
   const isButtonEnabled = () => {
@@ -53,95 +140,19 @@ export default function Login() {
     }
   };
 
-  const clearValues = () => {
-    setEmail('');
-    setPassword('');
-    setConfirmPassword(''); setConfirmPassword('');
-    setErrors({ email: '', password: '', confirmPassword: '' });
-  };
-
-  const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    router.push('https://www.machinename.com');
-  };
-
-  const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    try {
-      await logInWithGoogle();
-      router.push('https://www.machinename.com');
-    } catch (error) {
-      console.log(error);
-    } finally {
-      clearValues();
-    }
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setErrors({ email: '', password: '', confirmPassword: '' });
-    try {
-      if (isHelp) {
-        if (!email) {
-          setErrors({ ...errors, email: 'Email is required' });
-          return;
-        }
-        await sendPasswordReset(email);
-        setInfo('If the email address is registered, a password reset link will be sent to it.');
-        setEmail('');
-      } else if (isLogin) {
-        if (!password.trim()) {
-          setErrors({ ...errors, password: 'Password is required' });
-          return;
-        }
-        await logIn(email, password);
-        router.push('/');
-      } else if (!isLogin && !isHelp) {
-        if (!email.trim()) {
-          setErrors({ ...errors, email: 'Email is required' });
-          return;
-        }
-        if (!password.trim()) {
-          setErrors({ ...errors, password: 'Password is required' });
-          return;
-        }
-        if (confirmPassword.trim()) {
-          setErrors({ ...errors, confirmPassword: 'Confirm Password is required' });
-          return;
-        }
-        if (password !== confirmPassword) {
-          setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
-          return;
-        }
-        await createUserAccount(email, password);
-        router.push('https://www.machinename.com');
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    } finally {
-      clearValues();
-    }
-  };
-
   const toggleLoginHelp = () => {
     setIsHelp(prev => !prev);
-    clearValues();
+    handleClearValues();
   };
 
-  const handleSwitch = () => {
+  const toggleShowPassword = () => {
+    setShowPassword(prev => !prev);
+  };
+
+  const toggleSwitch = () => {
     setIsLogin(prev => !prev);
     setIsHelp(false);
-    clearValues();
-  };
-
-  if (isAuthLoading) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.wrapper}>
-          <CircularProgress />
-        </div>
-      </div>
-    );
+    handleClearValues();
   };
 
   return (
@@ -150,12 +161,12 @@ export default function Login() {
         <StyledTextButton
           disableRipple={true}
           type="button"
-          onClick={handleSwitch}>
+          onClick={toggleSwitch}>
           {isLogin ? 'Create an account' : 'Already have an account?'}
         </StyledTextButton>
       </div>
       <div className={styles.wrapper}>
-        <h1>{isHelp ? 'Log in help' : (isLogin ? 'Log in' : 'Create an account')}</h1>
+        <h1>{isHelp ? 'Log in help' : (isLogin ? 'Log into Machine Name' : 'Create an account')}</h1>
         <div className={isHelp ? styles.loginHelp : styles.login}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <FormTextField
@@ -187,12 +198,12 @@ export default function Login() {
                             color: 'gray',
                             cursor: 'pointer'
                           }}
-                          onClick={handleClickShowPassword} /> : <VisibilityOutlined
+                          onClick={toggleShowPassword} /> : <VisibilityOutlined
                           sx={{
                             color: 'gray',
                             cursor: 'pointer'
                           }}
-                          onClick={handleClickShowPassword} />}
+                          onClick={toggleShowPassword} />}
                       </InputAdornment>
                     )
                   },
@@ -240,8 +251,8 @@ export default function Login() {
         </div>
         {(!isLogin && !isHelp) && (
           <p>By creating an account, you agree to our <Link href={'Machine Name - Terms of Service.pdf'} className={styles.textTerms}
-            target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'Machine Name - Privacy Policy.pdf'} 
-           className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
+            target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'Machine Name - Privacy Policy.pdf'}
+              className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
         )}
         {isHelp ? (
           <React.Fragment>
