@@ -14,7 +14,7 @@ import {
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@mui/icons-material';
-import styles from './page.module.css';
+import styles from '../page.module.css';
 import { FormTextField, StyledButton, StyledTextButton } from './components/Styled';
 import React from 'react';
 import { useAuthContext } from './providers/AuthProvider';
@@ -62,13 +62,14 @@ export default function Login() {
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    router.push('/');
+    router.push('https://www.machinename.com');
   };
 
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
       await logInWithGoogle();
+      router.push('https://www.machinename.com');
     } catch (error) {
       console.log(error);
     } finally {
@@ -113,7 +114,7 @@ export default function Login() {
           return;
         }
         await createUserAccount(email, password);
-        router.push('/');
+        router.push('https://www.machinename.com');
       }
     } catch (error) {
       console.log('Error:', error);
@@ -238,7 +239,9 @@ export default function Login() {
           )}
         </div>
         {(!isLogin && !isHelp) && (
-          <p>By creating an account, you agree to our <Link href={'/'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'/'} className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
+          <p>By creating an account, you agree to our <Link href={'Machine Name - Terms of Service.pdf'} className={styles.textTerms}
+            target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'Machine Name - Privacy Policy.pdf'} 
+           className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
         )}
         {isHelp ? (
           <React.Fragment>
