@@ -250,8 +250,8 @@ export default function Login() {
           )}
         </div>
         {(!isLogin && !isHelp) && (
-          <p>By creating an account, you agree to our <Link href={'Machine Name - Terms of Service.pdf'} className={styles.textTerms}
-            target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'Machine Name - Privacy Policy.pdf'}
+          <p>By creating an account, you agree to our <Link href={'https://www.machinename.dev/Machine Name - Terms of Service.pdf'} className={styles.textTerms}
+            target="_blank" rel="noopener noreferrer">Terms of Service</Link> & <Link href={'https://www.machinename.dev/Machine Name - Privacy Policy.pdf'}
               className={styles.textTerms} target="_blank" rel="noopener noreferrer">Privacy Policy</Link></p>
         )}
         {isHelp ? (
