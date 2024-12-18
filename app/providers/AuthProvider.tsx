@@ -103,7 +103,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             throw new Error('No ID token received');
         }
         const response = await axios.post(
-            'https://api.machinename.com/login',
+            'https://api.machinename.dev/login',
             { idToken },
             { withCredentials: true }
         );
