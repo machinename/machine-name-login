@@ -45,7 +45,7 @@ export default function Login() {
     setErrors({ email: '', password: '', confirmPassword: '' });
   };
 
-  const handleAccountCreation = async (email: string, password: string, confirmPassword: string) => {
+  const handleCreateAccount = async (email: string, password: string, confirmPassword: string) => {
     if (!email.trim()) {
       setErrors({ ...errors, email: 'Email is required' });
       return;
@@ -90,16 +90,6 @@ export default function Login() {
     }
   };
 
-  const handlePasswordReset = async (email: string) => {
-    if (!email) {
-      setErrors({ ...errors, email: 'Email is required' });
-      return;
-    }
-    await sendPasswordReset(email);
-    setInfo('If the email address is registered, a password reset link will be sent to it.');
-    setEmail('');
-  };
-
   const handleLogIn = async (email: string, password: string) => {
     if (!password.trim()) {
       setErrors({ ...errors, password: 'Password is required' });
@@ -111,6 +101,16 @@ export default function Login() {
     }
   };
 
+  const handlePasswordReset = async (email: string) => {
+    if (!email) {
+      setErrors({ ...errors, email: 'Email is required' });
+      return;
+    }
+    await sendPasswordReset(email);
+    setInfo('If the email address is registered, a password reset link will be sent to it.');
+    setEmail('');
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors({ email: '', password: '', confirmPassword: '' });
@@ -120,7 +120,7 @@ export default function Login() {
       } else if (isLogin) {
         await handleLogIn(email, password);
       } else {
-        await handleAccountCreation(email, password, confirmPassword);
+        await handleCreateAccount(email, password, confirmPassword);
       }
     } catch (error) {
       console.log('Error: ', error);
