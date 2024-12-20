@@ -100,11 +100,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logInWithGoogle = useCallback(async (): Promise<boolean> => {
         try {
+            const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             const csrfToken = Cookie.get('csrfToken');
             if (!csrfToken) {
                 throw new Error('CSRF token is missing');
             }
-            const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             await sendIdTokenToServer(userCredential, csrfToken);
             await auth.signOut();
             return true;
