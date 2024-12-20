@@ -21,6 +21,7 @@ import {
 } from "firebase/auth";
 import { auth } from '../firebase';
 import axios from 'axios';
+import Cookie from 'js-cookie';
 
 interface AuthContextType {
     authError: string;
@@ -66,8 +67,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const createUserAccount = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
+            const csrfToken = Cookie.get('csrfToken');
+            if (!csrfToken) {
+                throw new Error('CSRF token is missing');
+            }
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await sendIdTokenToServer(userCredential);
+            await sendIdTokenToServer(userCredential, csrfToken);
             await sendEmailVerification(userCredential.user);
             return true;
         } catch (error) {
@@ -78,8 +83,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
+            const csrfToken = Cookie.get('csrfToken');
+            if (!csrfToken) {
+                throw new Error('CSRF token is missing');
+            }
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            await sendIdTokenToServer(userCredential);
+            await sendIdTokenToServer(userCredential, csrfToken);
             return true;
         } catch (error) {
             handleError(error);
@@ -89,8 +98,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logInWithGoogle = useCallback(async (): Promise<boolean> => {
         try {
+            const csrfToken = Cookie.get('csrfToken');
+            if (!csrfToken) {
+                throw new Error('CSRF token is missing');
+            }
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
-            await sendIdTokenToServer(userCredential);
+            await sendIdTokenToServer(userCredential, csrfToken);
             return true;
         } catch (error) {
             handleError(error);
@@ -98,14 +111,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, [handleError]);
 
-    const sendIdTokenToServer = async (userCredential: { user: User }) => {
+    const sendIdTokenToServer = async (userCredential: { user: User },
+        csrfToken: string
+    ) => {
         const idToken = await userCredential.user.getIdToken();
         if (!idToken) {
             throw new Error('No ID token received');
         }
         const response = await axios.post(
             'https://api.machinename.dev/login',
-            { idToken },
+            { idToken, csrfToken },
             { withCredentials: true }
         );
         if (response.status === 200) {

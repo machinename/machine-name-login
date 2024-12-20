@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
+import { Auth, getAuth, setPersistence, 
+    
+    browserSessionPersistence } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
 interface FirebaseConfig {
@@ -33,6 +35,9 @@ try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     firestore = getFirestore(app);
+    
+    setPersistence(auth, browserSessionPersistence);
+
     // const analytics = getAnalytics(app);
 } catch (error) {
     console.error("Firebase initialization error:", error);
