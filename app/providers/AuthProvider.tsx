@@ -128,7 +128,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [handleError]);
 
     useEffect(() => {
-        console.log('User - ', auth.currentUser);
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            console.log('onAuthStateChanged', user);
+        });
+        return () => unsubscribe();
     }, []);
 
     const contextValue = useMemo(() => ({
