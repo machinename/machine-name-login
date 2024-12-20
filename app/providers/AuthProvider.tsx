@@ -67,11 +67,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const createUserAccount = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const csrfToken = Cookie.get('csrfToken');
             if (!csrfToken) {
                 throw new Error('CSRF token is missing');
             }
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential, csrfToken);
             await sendEmailVerification(userCredential.user);
             await auth.signOut();
@@ -84,11 +84,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const csrfToken = Cookie.get('csrfToken');
             if (!csrfToken) {
                 throw new Error('CSRF token is missing');
             }
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential, csrfToken);
             await auth.signOut();
             return true;
