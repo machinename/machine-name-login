@@ -74,6 +74,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential, csrfToken);
             await sendEmailVerification(userCredential.user);
+            await auth.signOut();
             return true;
         } catch (error) {
             handleError(error);
@@ -89,6 +90,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential, csrfToken);
+            await auth.signOut();
             return true;
         } catch (error) {
             handleError(error);
@@ -104,6 +106,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             await sendIdTokenToServer(userCredential, csrfToken);
+            await auth.signOut();
             return true;
         } catch (error) {
             handleError(error);
