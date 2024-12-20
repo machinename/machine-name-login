@@ -129,7 +129,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [handleError]);
 
     useEffect(() => {
-        
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
                 console.log('User is signed in - ' + user.email);
