@@ -55,7 +55,7 @@
 .switchContainer {
   position: absolute;
   top: 0;
-  height: 4rem;
+  height: 3rem;
   right: 1rem;
   display: flex;
   align-items: center;
