@@ -7,6 +7,7 @@ import React, {
     useMemo,
     useCallback,
     ReactNode,
+    useEffect,
 } from 'react';
 import { FirebaseError } from 'firebase/app';
 import {
@@ -125,6 +126,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             throw error;
         }
     }, [handleError]);
+
+    useEffect(() => {
+        
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('User is signed in - ' + user.email);
+            } else {
+                console.log('User is signed out');
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
     const contextValue = useMemo(() => ({
         authError,
