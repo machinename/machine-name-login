@@ -70,7 +70,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential);
             await sendEmailVerification(userCredential.user);
-            window.location.assign('https://www.machinename.dev');
         } catch (error) {
             handleError(error);
         } finally {
