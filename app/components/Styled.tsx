@@ -72,11 +72,10 @@ export const StyledButton = styled(Button)({
     },
 });
 
-
-export const StyledIconButton = styled(IconButton)({
+export const StyledIconButtonInfo = styled(IconButton)({
     color: 'gray',
     '@media (prefers-color-scheme: dark)': {
-        color: '#ededed',
+        color: '#171717',
         '&.Mui-disabled': {
             color: 'gray'
         }
