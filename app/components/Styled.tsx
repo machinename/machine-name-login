@@ -82,3 +82,15 @@ export const StyledIconButton = styled(IconButton)({
         }
     }
 });
+
+export const StyledTextButton = styled(Button)({
+    color: 'inherit',
+    backgroundColor: 'transparent',
+    borderRadius: defaultBorderRadius,
+    fontFamily: 'inherit',
+    fontWeight: defaultFontWeight,
+    padding: '0',
+    '@media (prefers-color-scheme: dark)': {
+        color: '#ededed',
+    }
+});
