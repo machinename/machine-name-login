@@ -62,10 +62,7 @@ export default function Login() {
       setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
       return;
     }
-    const sessionCreated = await createUserAccount(email, password);
-    if (sessionCreated) {
-      router.push('https://www.machinename.dev');
-    }
+    await createUserAccount(email, password);
   };
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -76,13 +73,7 @@ export default function Login() {
   const handleContinueWithGoogle = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      let sessionCreated = false;
-      sessionCreated = await logInWithGoogle();
-      if (sessionCreated) {
-        router.push('https://www.machinename.dev');
-      } else {
-        setInfo('Google login failed. Please try again.');
-      }
+      await logInWithGoogle();
     } catch (error) {
       console.log(error);
     } finally {
@@ -95,10 +86,7 @@ export default function Login() {
       setErrors({ ...errors, password: 'Password is required' });
       return;
     }
-    const sessionCreated = await logIn(email, password);
-    if (sessionCreated) {
-      router.push('https://www.machinename.dev');
-    }
+    await logIn(email, password);
   };
 
   const handlePasswordReset = async (email: string) => {

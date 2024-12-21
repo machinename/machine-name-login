@@ -9,6 +9,7 @@ import React, {
     ReactNode,
     useEffect,
 } from 'react';
+
 import { FirebaseError } from 'firebase/app';
 import {
     createUserWithEmailAndPassword,
@@ -24,9 +25,9 @@ import axios from 'axios';
 
 interface AuthContextType {
     authError: string;
-    createUserAccount: (email: string, password: string) => Promise<boolean>;
-    logIn: (email: string, password: string) => Promise<boolean>;
-    logInWithGoogle: () => Promise<boolean>;
+    createUserAccount: (email: string, password: string) => Promise<void>;
+    logIn: (email: string, password: string) => Promise<void>;
+    logInWithGoogle: () => Promise<void>;
     sendPasswordReset: (email: string) => Promise<void>;
 }
 
@@ -64,42 +65,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     }, []);
 
-    const createUserAccount = useCallback(async (email: string, password: string): Promise<boolean> => {
+    const createUserAccount = useCallback(async (email: string, password: string): Promise<void> => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential);
             await sendEmailVerification(userCredential.user);
-            return true;
+            window.location.assign('https://www.machinename.dev');
         } catch (error) {
             handleError(error);
-            return false;
         } finally {
             await auth.signOut();
         }
     }, [handleError]);
 
-    const logIn = useCallback(async (email: string, password: string): Promise<boolean> => {
+    const logIn = useCallback(async (email: string, password: string): Promise<void> => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential);
             await auth.signOut();
-            return true;
+            window.location.assign('https://www.machinename.dev');
         } catch (error) {
             handleError(error);
-            return false;
         } finally {
             await auth.signOut();
         }
     }, [handleError]);
 
-    const logInWithGoogle = useCallback(async (): Promise<boolean> => {
+    const logInWithGoogle = useCallback(async (): Promise<void> => {
         try {
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             await sendIdTokenToServer(userCredential);
-            return true;
         } catch (error) {
             handleError(error);
-            return false;
         } finally {
             await auth.signOut();
         }
