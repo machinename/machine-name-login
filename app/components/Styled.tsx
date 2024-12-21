@@ -72,24 +72,13 @@ export const StyledButton = styled(Button)({
     },
 });
 
-export const StyledIconButtonInfo = styled(IconButton)({
+
+export const StyledIconButton = styled(IconButton)({
     color: 'gray',
     '@media (prefers-color-scheme: dark)': {
-        color: '#171717',
+        color: '#ededed',
         '&.Mui-disabled': {
             color: 'gray'
         }
-    }
-});
-
-export const StyledTextButton = styled(Button)({
-    color: 'inherit',
-    backgroundColor: 'transparent',
-    borderRadius: defaultBorderRadius,
-    fontFamily: 'inherit',
-    fontWeight: defaultFontWeight,
-    padding: '0',
-    '@media (prefers-color-scheme: dark)': {
-        color: '#ededed',
     }
 });
