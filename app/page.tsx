@@ -16,12 +16,10 @@ import {
 import styles from './page.module.css';
 import { FormTextField, StyledButton, StyledTextButton } from './components/Styled';
 import React from 'react';
-import { useAuthContext } from './providers/AuthProvider';
 import { useAppContext } from './providers/AppProvider';
 
 export default function Login() {
-  const { createUserAccount, logIn, logInWithGoogle, sendPasswordReset } = useAuthContext();
-  const { setInfo } = useAppContext();
+  const { createUserAccount, logIn, logInWithGoogle, sendPasswordReset, setInfo } = useAppContext();
 
   const router = useRouter();
 
@@ -97,7 +95,6 @@ export default function Login() {
     }
     await sendPasswordReset(email);
     setInfo('If the email address is registered, a password reset link will be sent to it.');
-    setEmail('');
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -114,8 +111,7 @@ export default function Login() {
         router.push('https://www.machinename.dev');
       }
     } catch (error) {
-      console.log('Error: ', error);
-      setInfo('Error: ' + error);
+      console.error(error);
     } finally {
       handleClearValues();
     }
