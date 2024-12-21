@@ -26,9 +26,3 @@
 .info p {
     color: #ededed;
 }
-
-@media (prefers-color-scheme: dark) {
-    .info {
-        border-bottom: 0.5px solid gray;
-    }
-}

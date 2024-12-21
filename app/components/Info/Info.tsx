@@ -14,7 +14,10 @@ const Info: React.FC = () => {
             <div className={styles.wrapper}>
                 <div className={styles.info}>
                     <p>{info}</p>
-                    <StyledIconButton onClick={() => setInfo('')}>
+                    <StyledIconButton
+                        onClick={() => setInfo('')}
+                        sx={{ color: 'gray' }}
+                    >
                         <Close />
                     </StyledIconButton>
                 </div>
