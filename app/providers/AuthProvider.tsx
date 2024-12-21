@@ -6,8 +6,7 @@ import React, {
     useState,
     useMemo,
     useCallback,
-    ReactNode,
-    useEffect,
+    ReactNode
 } from 'react';
 
 import { FirebaseError } from 'firebase/app';
@@ -107,13 +106,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             throw new Error('No ID token received');
         }
         const response = await axios.post(
-            'https://api.machinename.dev/login',
+            'https://machinename.dev/login',
             { idToken },
             { withCredentials: true }
         );
         if (response.status !== 200) {
             throw new Error(response.data);
-        } 
+        }
     };
 
     const sendPasswordReset = useCallback(async (email: string): Promise<void> => {
@@ -124,13 +123,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             throw error;
         }
     }, [handleError]);
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            console.log('onAuthStateChanged', user);
-        });
-        return () => unsubscribe();
-    }, []);
 
     const contextValue = useMemo(() => ({
         authError,
