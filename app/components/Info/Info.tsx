@@ -1,10 +1,10 @@
 'use client'
 
 import React from 'react';
-import { IconButton } from '@mui/material';
 import styles from './Info.module.css';
 import { Close } from '@mui/icons-material';
 import { useAppContext } from '../../providers/AppProvider';
+import { StyledIconButton } from '../Styled';
 
 const Info: React.FC = () => {
     const { info, setInfo } = useAppContext();
@@ -14,10 +14,9 @@ const Info: React.FC = () => {
             <div className={styles.wrapper}>
                 <div className={styles.info}>
                     <p>{info}</p>
-                    <IconButton onClick={() => setInfo('')}
-                        sx={{ color: 'lightgray' }}>
+                    <StyledIconButton onClick={() => setInfo('')}>
                         <Close />
-                    </IconButton>
+                    </StyledIconButton>
                 </div>
             </div>
         ));

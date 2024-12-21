@@ -19,7 +19,7 @@ import React from 'react';
 import { useAppContext } from './providers/AppProvider';
 
 export default function Login() {
-  const { createUserAccount, logIn, logInWithGoogle, sendPasswordReset, setInfo } = useAppContext();
+  const { isLoading, createUserAccount, logIn, logInWithGoogle, sendPasswordReset, setInfo } = useAppContext();
 
   const router = useRouter();
 
@@ -61,6 +61,7 @@ export default function Login() {
       return;
     }
     await createUserAccount(email, password);
+    handleClearValues();
   };
 
   const handleContinueAsGuest = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -86,6 +87,7 @@ export default function Login() {
       return;
     }
     await logIn(email, password);
+    handleClearValues();
   };
 
   const handlePasswordReset = async (email: string) => {
@@ -100,6 +102,7 @@ export default function Login() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrors({ email: '', password: '', confirmPassword: '' });
+
     try {
       if (isHelp) {
         await handlePasswordReset(email);
@@ -112,9 +115,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      handleClearValues();
-    }
+    } 
   };
 
   const isButtonEnabled = () => {
@@ -140,6 +141,14 @@ export default function Login() {
     setIsLogin(prev => !prev);
     setIsHelp(false);
     handleClearValues();
+  };
+
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <h1>Loading...</h1>
+      </div>
+    );
   };
 
   return (

@@ -1,4 +1,4 @@
-import { Button, styled, TextField } from "@mui/material";
+import { Button, IconButton, styled, TextField } from "@mui/material";
 
 const defaultBorderRadius = '0px';
 const defaultFontWeight = 'regular';
@@ -70,6 +70,17 @@ export const StyledButton = styled(Button)({
         color: 'black',
         backgroundColor: '#ededed',
     },
+});
+
+
+export const StyledIconButton = styled(IconButton)({
+    color: 'gray',
+    '@media (prefers-color-scheme: dark)': {
+        color: '#ededed',
+        '&.Mui-disabled': {
+            color: 'gray'
+        }
+    }
 });
 
 export const StyledTextButton = styled(Button)({

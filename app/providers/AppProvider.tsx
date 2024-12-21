@@ -1,15 +1,9 @@
 'use client'
 
-import React, {
-    createContext,
-    useContext,
-    useState,
-    useMemo,
-    useCallback,
-    ReactNode
-} from 'react';
-
-// import { FirebaseError } from 'firebase/app';
+import axios from 'axios';
+import { AxiosError } from 'axios';
+import { auth } from '../firebase';
+import { FirebaseError } from 'firebase/app';
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
@@ -19,90 +13,110 @@ import {
     signInWithPopup,
     User,
 } from "firebase/auth";
-import { auth } from '../firebase';
-import axios from 'axios';
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useMemo,
+    useCallback,
+    ReactNode
+} from 'react';
 
 interface AppContextType {
     info: string;
+    isLoading: boolean;
     createUserAccount: (email: string, password: string) => Promise<void>;
     logIn: (email: string, password: string) => Promise<void>;
     logInWithGoogle: () => Promise<void>;
     sendPasswordReset: (email: string) => Promise<void>;
     setInfo: (info: string) => void;
+    setIsLoading: (isLoading: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const apiUrl = 'https://api.machinename.dev/login';
     const [info, setInfo] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    // const handleError = useCallback((error: unknown) => {
-    //     if (error instanceof FirebaseError) {
-    //         switch (error.code) {
-    //             case 'auth/invalid-credential':
-    //                 setAuthError('Invalid credentials provided');
-    //                 break;
-    //             case 'auth/email-already-in-use':
-    //                 setAuthError('Email already in use');
-    //                 break;
-    //             case 'auth/invalid-email':
-    //                 setAuthError('Invalid email address');
-    //                 break;
-    //             case 'auth/operation-not-allowed':
-    //                 setAuthError('Operation not allowed');
-    //                 break;
-    //             case 'auth/weak-password':
-    //                 setAuthError('The password is too weak');
-    //                 break;
-    //             case 'auth/too-many-requests':
-    //                 setAuthError('Access temporarily disabled due to many failed attempts');
-    //                 break;
-    //             default:
-    //                 setAuthError('Unknown FirebaseError, error.code: ' + error.code);
-    //         }
-    //     } else {
-    //         setAuthError('' + error);
-    //     }
-    //     throw error;
-    // }, []);
+    const handleError = useCallback((error: unknown) => {
+        if (error instanceof AxiosError) {
+            setInfo('' + error.message);
+            return;
+        }
+
+        if (error instanceof FirebaseError) {
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                    setInfo('Invalid credentials provided');
+                    break;
+                case 'auth/email-already-in-use':
+                    setInfo('Email already in use');
+                    break;
+                case 'auth/invalid-email':
+                    setInfo('Invalid email address');
+                    break;
+                case 'auth/operation-not-allowed':
+                    setInfo('Operation not allowed');
+                    break;
+                case 'auth/weak-password':
+                    setInfo('The password is too weak');
+                    break;
+                case 'auth/too-many-requests':
+                    setInfo('Access temporarily disabled due to many failed attempts');
+                    break;
+                default:
+                    setInfo('Unknown FirebaseError, error.code: ' + error.code);
+            }
+            return;
+        }
+        setInfo('' + error);
+    }, []);
 
     const createUserAccount = useCallback(async (email: string, password: string): Promise<void> => {
         try {
+            setIsLoading(true);
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await sendIdTokenToServer(userCredential);
             await sendEmailVerification(userCredential.user);
+            await sendIdTokenToServer(userCredential);
         } catch (error) {
-            setInfo('Error creating account');
+            handleError(error);
             throw error;
         } finally {
+            setIsLoading(false);
             await auth.signOut();
         }
-    }, []);
+    }, [handleError]);
 
     const logIn = useCallback(async (email: string, password: string): Promise<void> => {
         try {
+            setIsLoading(true);
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential);
             await auth.signOut();
         } catch (error) {
-            setInfo('Error logging in');
+            handleError(error);
             throw error;
         } finally {
+            setIsLoading(false);
             await auth.signOut();
         }
-    }, []);
+    }, [handleError]);
 
     const logInWithGoogle = useCallback(async (): Promise<void> => {
         try {
+            setIsLoading(true);
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             await sendIdTokenToServer(userCredential);
         } catch (error) {
-            setInfo('Error logging in with Google');
+            handleError(error);
             throw error;
         } finally {
+            setIsLoading(false);
             await auth.signOut();
         }
-    }, []);
+    }, [handleError]);
 
     const sendIdTokenToServer = async (userCredential: { user: User }
     ) => {
@@ -111,7 +125,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             throw new Error('No ID token received');
         }
         const response = await axios.post(
-            'https://machinename.dev/login',
+            apiUrl,
             { idToken },
             { withCredentials: true }
         );
@@ -122,27 +136,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const sendPasswordReset = useCallback(async (email: string): Promise<void> => {
         try {
+            setIsLoading(true);
             await sendPasswordResetEmail(auth, email);
         } catch (error) {
-            setInfo('Error sending password reset email');
+            handleError(error);
             throw error;
+        } finally {
+            setIsLoading(false);
         }
-    }, []);
+    }, [handleError]);
 
     const contextValue = useMemo(() => ({
         info,
+        isLoading,
         createUserAccount,
         logIn,
         logInWithGoogle,
         sendPasswordReset,
         setInfo,
+        setIsLoading,
     }), [
         info,
+        isLoading,
         createUserAccount,
         logIn,
         logInWithGoogle,
         sendPasswordReset,
-        setInfo,
     ]);
 
     return (
