@@ -74,7 +74,7 @@ export default function Login() {
     event.preventDefault();
     try {
       await logInWithGoogle();
-      window.location.assign('https://www.machinename.dev');
+      router.push('https://www.machinename.dev');
     } catch (error) {
       console.log(error);
     } finally {
@@ -108,10 +108,10 @@ export default function Login() {
         await handlePasswordReset(email);
       } else if (isLogin) {
         await handleLogIn(email, password);
-        window.location.assign('https://www.machinename.dev');
+        router.push('https://www.machinename.dev');
       } else {
         await handleCreateAccount(email, password, confirmPassword);
-        window.location.assign('https://www.machinename.dev');
+        router.push('https://www.machinename.dev');
       }
     } catch (error) {
       console.log('Error: ', error);
