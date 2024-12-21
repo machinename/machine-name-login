@@ -69,11 +69,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential);
             await sendEmailVerification(userCredential.user);
-            await auth.signOut();
             return true;
         } catch (error) {
             handleError(error);
             return false;
+        } finally {
+            await auth.signOut();
         }
     }, [handleError]);
 
@@ -86,6 +87,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } catch (error) {
             handleError(error);
             return false;
+        } finally {
+            await auth.signOut();
         }
     }, [handleError]);
 
@@ -93,11 +96,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
             await sendIdTokenToServer(userCredential);
-            await auth.signOut();
             return true;
         } catch (error) {
             handleError(error);
             return false;
+        } finally {
+            await auth.signOut();
         }
     }, [handleError]);
 
@@ -113,14 +117,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             { withCredentials: true }
         );
         if (response.status !== 200) {
-            throw new Error('Failed to create login session');
+            throw new Error(response.data);
         } 
     };
 
     const sendPasswordReset = useCallback(async (email: string): Promise<void> => {
-        if (auth === null) {
-            return;
-        }
         try {
             await sendPasswordResetEmail(auth, email);
         } catch (error) {
