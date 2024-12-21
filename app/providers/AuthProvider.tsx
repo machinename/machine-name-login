@@ -62,6 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } else {
             setAuthError('' + error);
         }
+        throw error;
     }, []);
 
     const createUserAccount = useCallback(async (email: string, password: string): Promise<void> => {
@@ -120,7 +121,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             await sendPasswordResetEmail(auth, email);
         } catch (error) {
             handleError(error);
-            throw error;
         }
     }, [handleError]);
 
