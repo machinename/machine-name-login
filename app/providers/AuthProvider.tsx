@@ -83,7 +83,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             await sendIdTokenToServer(userCredential);
             await auth.signOut();
-            window.location.assign('https://www.machinename.dev');
         } catch (error) {
             handleError(error);
         } finally {
